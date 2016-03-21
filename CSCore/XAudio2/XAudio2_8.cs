@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+using CSCore.DMO.Effects;
+using CSCore.Win32;
+
 namespace CSCore.XAudio2
 {
     /// <summary>
@@ -382,6 +385,22 @@ namespace CSCore.XAudio2
         protected override object GetDefaultDevice()
         {
             return null;
+        }
+
+        /// <summary>
+        /// Creates the XAPO reverb effect.
+        /// </summary>
+        /// <returns>
+        /// The created effect.
+        /// </returns>
+        public override unsafe ReverbEfffect CreateReverbEffect()
+        {
+            IntPtr ptr = IntPtr.Zero;
+            var pptr = new IntPtr(&ptr);
+            int result = NativeMethods.CreateAudioReverb(pptr);
+            XAudio2Exception.Try(result, "Interop", "CreateAudioReverb");
+
+            return new ReverbEfffect(ptr);
         }
     }
 }

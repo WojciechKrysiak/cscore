@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+
+using CSCore.DMO.Effects;
 using CSCore.Win32;
 
 namespace CSCore.XAudio2
@@ -13,6 +15,8 @@ namespace CSCore.XAudio2
 // ReSharper disable once InconsistentNaming
     public class XAudio2_7 : XAudio2
     {
+        private readonly bool debug;
+
         /// <summary>
         /// The denominator of a quantum unit. In 10ms chunks (= 1/100 seconds). 
         /// </summary>
@@ -92,6 +96,7 @@ namespace CSCore.XAudio2
         /// <remarks>This constructor already calls <see cref="Initialize" />. Don't call it a second time.</remarks>
         public XAudio2_7(bool debug, XAudio2Processor processor)
         {
+            this.debug = debug;
             Guid guid = debug
                 ? new Guid("db05ea35-0329-4d4b-a53a-6dead03d3852")
                 : new Guid("5a508685-a254-4fba-9b82-9a24b00306af");
@@ -471,6 +476,28 @@ namespace CSCore.XAudio2
         public override unsafe void SetDebugConfigurationNative(DebugConfiguration debugConfiguration, IntPtr reserved)
         {
             InteropCalls.CallI4(UnsafeBasePtr, &debugConfiguration, reserved.ToPointer(), ((void**) (*(void**) UnsafeBasePtr))[15]);
+        }
+
+        /// <summary>
+        /// Creates the XAPO reverb effect.
+        /// </summary>
+        /// <returns>
+        /// The created effect.
+        /// </returns>
+        public override ReverbEfffect CreateReverbEffect()
+        {
+            Guid guid = debug
+               ? new Guid("c4f82dd4-cb4e-4ce1-8bdb-ee32d4198269")
+               : new Guid("a93130e-1d53-41d1-a9cf-e758800bb179");
+
+            IntPtr ptr = IntPtr.Zero;
+            HResult result = Win32.NativeMethods.CoCreateInstance(guid,
+                IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, typeof(IUnknown).GUID, out ptr);
+
+            if (result != HResult.S_OK)
+                throw new Win32Exception((int)result, "Could not create Reverb effect.");
+
+            return new ReverbEfffect(ptr);
         }
 
         /// <summary>

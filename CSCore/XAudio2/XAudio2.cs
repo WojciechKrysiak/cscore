@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using CSCore.CoreAudioAPI;
+using CSCore.DMO.Effects;
 using CSCore.Win32;
 
 namespace CSCore.XAudio2
@@ -13,6 +14,8 @@ namespace CSCore.XAudio2
     [Guid("60d8dac8-5aa1-4e8e-b597-2f5e2883d484")]
     public abstract class XAudio2 : ComObject
     {
+        private const string ApoDLL = "Windows.Media.Audio.dll";
+
         private XAudio2Version _version;
         private const string N = "IXAudio2";
 
@@ -831,6 +834,14 @@ namespace CSCore.XAudio2
         {
             SetDebugConfigurationNative(debugConfiguration, IntPtr.Zero);
         }
+
+        /// <summary>
+        /// Creates the XAPO reverb effect.
+        /// </summary>
+        /// <returns>
+        /// The created effect.
+        /// </returns>
+        public abstract ReverbEfffect CreateReverbEffect();
 
         /// <summary>
         ///     Returns the default device.

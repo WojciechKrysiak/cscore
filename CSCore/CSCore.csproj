@@ -33,7 +33,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -275,6 +275,8 @@
     <Compile Include="DMO\Effects\EchoParameters.cs" />
     <Compile Include="DMO\Effects\FlangerParameters.cs" />
     <Compile Include="DMO\Effects\GargleParameters.cs" />
+    <Compile Include="DMO\Effects\ReverbEfffect.cs" />
+    <Compile Include="DMO\Effects\ReverbParameters.cs" />
     <Compile Include="DMO\Effects\WavesReverbParameters.cs" />
     <Compile Include="DMO\EnumDMO.cs" />
     <Compile Include="DMO\IMediaBuffer.cs" />
@@ -653,7 +655,7 @@
       echo Build-Configuration: RELEASE
       echo    ✘ DEBUG
       echo    ✔ OPTIMIZE
-      set ilasm_args=/DLL /OPTIMIZE
+      set ilasm_args=/DLL /OPTIMIZE /debug=OPT
       ) else (
       echo ✘ Invalid Configuration.
       goto EXIT_ERR
@@ -668,7 +670,9 @@
       echo.
       echo.
       echo Calling CSCli ...
-      call "%25cscli%25" -file:"$(TargetPath)" -r:"RemoveObjAttribute" -c:"CSCalliAttribute"
+     call "%25cscli%25" -file:"$(TargetPath)" -r:"RemoveObjAttribute" -c:"CSCalliAttribute"
+
+      copy $(TargetPath) $(ProjectDir)..\..\SoundStudio\win\external\
 
       :EXIT
       REM EXIT /B %25errorCode%25
@@ -676,7 +680,7 @@
       :EXIT_ERR
       set errorCode=-1
       REM goto EXIT
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

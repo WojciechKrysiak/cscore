@@ -11,5 +11,9 @@ namespace CSCore.XAudio2
         [SuppressUnmanagedCodeSecurity]
         [DllImport(XAudioDll, CallingConvention = CallingConvention.StdCall)]
         internal static extern int XAudio2Create(IntPtr ptr, int flags, XAudio2Processor flags0);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(XAudioDll, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int CreateAudioReverb(IntPtr ptr);
     }
 }
