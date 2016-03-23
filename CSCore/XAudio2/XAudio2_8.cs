@@ -393,14 +393,14 @@ namespace CSCore.XAudio2
         /// <returns>
         /// The created effect.
         /// </returns>
-        public override unsafe ReverbEfffect CreateReverbEffect()
+        public override unsafe ReverbEffect CreateReverbEffect()
         {
             IntPtr ptr = IntPtr.Zero;
             var pptr = new IntPtr(&ptr);
             int result = NativeMethods.CreateAudioReverb(pptr);
             XAudio2Exception.Try(result, "Interop", "CreateAudioReverb");
 
-            return new ReverbEfffect(ptr);
+            return new ReverbEffect(ptr);
         }
     }
 }

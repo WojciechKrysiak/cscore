@@ -841,7 +841,7 @@ namespace CSCore.XAudio2
         /// <returns>
         /// The created effect.
         /// </returns>
-        public abstract ReverbEfffect CreateReverbEffect();
+        public abstract ReverbEffect CreateReverbEffect();
 
         /// <summary>
         ///     Returns the default device.

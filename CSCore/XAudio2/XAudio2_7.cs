@@ -484,7 +484,7 @@ namespace CSCore.XAudio2
         /// <returns>
         /// The created effect.
         /// </returns>
-        public override ReverbEfffect CreateReverbEffect()
+        public override ReverbEffect CreateReverbEffect()
         {
             Guid guid = debug
                ? new Guid("c4f82dd4-cb4e-4ce1-8bdb-ee32d4198269")
@@ -497,7 +497,7 @@ namespace CSCore.XAudio2
             if (result != HResult.S_OK)
                 throw new Win32Exception((int)result, "Could not create Reverb effect.");
 
-            return new ReverbEfffect(ptr);
+            return new ReverbEffect(ptr);
         }
 
         /// <summary>

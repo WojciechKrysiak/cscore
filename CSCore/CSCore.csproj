@@ -275,7 +275,7 @@
     <Compile Include="DMO\Effects\EchoParameters.cs" />
     <Compile Include="DMO\Effects\FlangerParameters.cs" />
     <Compile Include="DMO\Effects\GargleParameters.cs" />
-    <Compile Include="DMO\Effects\ReverbEfffect.cs" />
+    <Compile Include="DMO\Effects\ReverbEffect.cs" />
     <Compile Include="DMO\Effects\ReverbParameters.cs" />
     <Compile Include="DMO\Effects\WavesReverbParameters.cs" />
     <Compile Include="DMO\EnumDMO.cs" />
@@ -655,7 +655,7 @@
       echo Build-Configuration: RELEASE
       echo    ✘ DEBUG
       echo    ✔ OPTIMIZE
-      set ilasm_args=/DLL /OPTIMIZE /debug=OPT
+      set ilasm_args=/DLL /OPTIMIZE /DEBUG=IMPL
       ) else (
       echo ✘ Invalid Configuration.
       goto EXIT_ERR
@@ -670,7 +670,7 @@
       echo.
       echo.
       echo Calling CSCli ...
-     call "%25cscli%25" -file:"$(TargetPath)" -r:"RemoveObjAttribute" -c:"CSCalliAttribute"
+      call "%25cscli%25" -file:"$(TargetPath)" -r:"RemoveObjAttribute" -c:"CSCalliAttribute"
 
       copy $(TargetPath) $(ProjectDir)..\..\SoundStudio\win\external\
 
