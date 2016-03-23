@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -85,8 +86,16 @@ namespace CSCore.Codecs.MP3
         {
             Mp3Frame frame = null;
             long offsetOfFirstFrame = 0;
+            stream = new BufferedStream(stream);
 
-            ID3v2.SkipTag(stream);
+            while (ID3v2.SkipTag(stream))
+            {
+                /* skip all id3 tags (see https://github.com/filoe/cscore/issues/63)
+                 * there are some files with multiple id3v2 tags
+                 * not sure whether this is according to the id3 specification but we have to handle it anyway
+                 * as long as the SkipTag method returns true, another id3 tag has been found
+                 */
+            }
 
             while (frame == null && !stream.IsEndOfStream())
             {
@@ -147,8 +156,16 @@ namespace CSCore.Codecs.MP3
 
             _comObj = new DmoMP3DecoderObject();
             var ptr = Marshal.GetComInterfaceForObject(_comObj, typeof (IMediaObject));
-
-            return new MediaObject(ptr);
+            try
+            {
+                return new MediaObject(ptr);
+            }
+            catch (Exception)
+            {
+                Marshal.Release(ptr);
+                Marshal.ReleaseComObject(_comObj);
+                throw;
+            }
         }
 
         /// <summary>

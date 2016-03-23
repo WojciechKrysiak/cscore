@@ -84,15 +84,18 @@ namespace CSCore.XAudio2
         ///     Specifies which CPU to use. Use <see cref="XAudio2Processor.Xaudio28DefaultProcessor" /> as
         ///     default value.
         /// </param>
-        public unsafe XAudio2_8(XAudio2Processor processor)
+        public XAudio2_8(XAudio2Processor processor)
+            : base(CreateXAudio2Instance(processor), XAudio2Version.XAudio2_8)
+        {
+        }
+
+        private static unsafe IntPtr CreateXAudio2Instance(XAudio2Processor processor)
         {
             IntPtr ptr = IntPtr.Zero;
             var pptr = new IntPtr(&ptr);
             int result = NativeMethods.XAudio2Create(pptr, 0, processor);
             XAudio2Exception.Try(result, "Interop", "XAudio2Create");
-
-            Version = XAudio2Version.XAudio2_8;
-            BasePtr = ptr;
+            return ptr;
         }
 
         /// <summary>
@@ -111,7 +114,17 @@ namespace CSCore.XAudio2
                 ptr = Marshal.GetComInterfaceForObject(callback, typeof (IXAudio2EngineCallback));
                 ptr = Utils.Utils.GetComInterfaceForObjectWithAdjustedVtable(ptr, 3, 3);
             }
-            return InteropCalls.CallI(UnsafeBasePtr, ptr.ToPointer(), ((void**) (*(void**) UnsafeBasePtr))[3]);
+            try
+            {
+                return InteropCalls.CallI(UnsafeBasePtr, ptr.ToPointer(), ((void**) (*(void**) UnsafeBasePtr))[3]);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.Release(ptr);
+                }
+            }
         }
 
         /// <summary>
@@ -187,17 +200,27 @@ namespace CSCore.XAudio2
                 p = Utils.Utils.GetComInterfaceForObjectWithAdjustedVtable(p, 7, 3);
             }
 
-            fixed (void* ptr = &pSourceVoice)
+            try
             {
-                return InteropCalls.CallI(UnsafeBasePtr,
-                    ptr,
-                    sourceFormat,
-                    flags,
-                    maxFrequencyRatio,
-                    p.ToPointer(),
-                    sendList.HasValue ? &value0 : (void*) IntPtr.Zero,
-                    effectChain.HasValue ? &value1 : (void*) IntPtr.Zero,
-                    ((void**) (*(void**) UnsafeBasePtr))[5]);
+                fixed (void* ptr = &pSourceVoice)
+                {
+                    return InteropCalls.CallI(UnsafeBasePtr,
+                        ptr,
+                        sourceFormat,
+                        flags,
+                        maxFrequencyRatio,
+                        p.ToPointer(),
+                        sendList.HasValue ? &value0 : (void*) IntPtr.Zero,
+                        effectChain.HasValue ? &value1 : (void*) IntPtr.Zero,
+                        ((void**) (*(void**) UnsafeBasePtr))[5]);
+                }
+            }
+            finally
+            {
+                if (p != IntPtr.Zero)
+                {
+                    Marshal.Release(p);
+                }
             }
         }
 
