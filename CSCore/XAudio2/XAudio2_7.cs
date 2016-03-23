@@ -98,12 +98,12 @@ namespace CSCore.XAudio2
         public XAudio2_7(bool debug, XAudio2Processor processor)
             : base(CreateXAudioInstance(debug), XAudio2Version.XAudio2_7)
         {
+            this.debug = debug;
             Initialize(0, processor);
         }
 
         private static IntPtr CreateXAudioInstance(bool debug)
         {
-            this.debug = debug;
             Guid guid = debug
                 ? new Guid("db05ea35-0329-4d4b-a53a-6dead03d3852")
                 : new Guid("5a508685-a254-4fba-9b82-9a24b00306af");
