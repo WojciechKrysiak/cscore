@@ -66,6 +66,7 @@ namespace CSCore.XAudio2
         /// </summary>
         /// <param name="ptr">Native pointer of the <see cref="XAudio2_7" /> object.</param>
         public XAudio2_7(IntPtr ptr)
+            : base(ptr, XAudio2Version.XAudio2_7)
         {
         }
 
@@ -91,6 +92,12 @@ namespace CSCore.XAudio2
         /// </param>
         /// <remarks>This constructor already calls <see cref="Initialize" />. Don't call it a second time.</remarks>
         public XAudio2_7(bool debug, XAudio2Processor processor)
+            : base(CreateXAudioInstance(debug), XAudio2Version.XAudio2_7)
+        {
+            Initialize(0, processor);
+        }
+
+        private static IntPtr CreateXAudioInstance(bool debug)
         {
             Guid guid = debug
                 ? new Guid("db05ea35-0329-4d4b-a53a-6dead03d3852")
@@ -98,15 +105,12 @@ namespace CSCore.XAudio2
 
             IntPtr ptr0;
             HResult result = Win32.NativeMethods.CoCreateInstance(guid,
-                IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, typeof (XAudio2_7).GUID, out ptr0);
+                IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, typeof(XAudio2_7).GUID, out ptr0);
 
             if (result != HResult.S_OK)
-                throw new Win32Exception((int) result, "Could not create XAudio2.7 instance.");
+                throw new Win32Exception((int)result, "Could not create XAudio2.7 instance.");
 
-
-            BasePtr = ptr0;
-            Version = XAudio2Version.XAudio2_7;
-            Initialize(0, processor);
+            return ptr0;
         }
 
 
@@ -217,7 +221,17 @@ namespace CSCore.XAudio2
                 ptr = Marshal.GetComInterfaceForObject(callback, typeof (IXAudio2EngineCallback));
                 ptr = Utils.Utils.GetComInterfaceForObjectWithAdjustedVtable(ptr, 3, 3);
             }
-            return InteropCalls.CallI(UnsafeBasePtr, ptr.ToPointer(), ((void**) (*(void**) UnsafeBasePtr))[6]);
+            try
+            {
+                return InteropCalls.CallI(UnsafeBasePtr, ptr.ToPointer(), ((void**) (*(void**) UnsafeBasePtr))[6]);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.Release(ptr);   
+                }
+            }
         }
 
         /// <summary>
@@ -292,18 +306,27 @@ namespace CSCore.XAudio2
                 p = Marshal.GetComInterfaceForObject(voiceCallback, typeof (IXAudio2VoiceCallback));
                 p = Utils.Utils.GetComInterfaceForObjectWithAdjustedVtable(p, 7, 3);
             }
-
-            fixed (void* ptr = &pSourceVoice)
+            try
             {
-                return InteropCalls.CallI(UnsafeBasePtr,
-                    ptr,
-                    sourceFormat,
-                    flags,
-                    maxFrequencyRatio,
-                    p.ToPointer(),
-                    sendList.HasValue ? &value0 : (void*) IntPtr.Zero,
-                    effectChain.HasValue ? &value1 : (void*) IntPtr.Zero,
-                    ((void**) (*(void**) UnsafeBasePtr))[8]);
+                fixed (void* ptr = &pSourceVoice)
+                {
+                    return InteropCalls.CallI(UnsafeBasePtr,
+                        ptr,
+                        sourceFormat,
+                        flags,
+                        maxFrequencyRatio,
+                        p.ToPointer(),
+                        sendList.HasValue ? &value0 : (void*) IntPtr.Zero,
+                        effectChain.HasValue ? &value1 : (void*) IntPtr.Zero,
+                        ((void**) (*(void**) UnsafeBasePtr))[8]);
+                }
+            }
+            finally
+            {
+                if (p != IntPtr.Zero)
+                {
+                    Marshal.Release(p);
+                }
             }
         }
 
