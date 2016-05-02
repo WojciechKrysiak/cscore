@@ -185,9 +185,12 @@ namespace CSCore.Win32
         /// </summary>
         ~ComObject()
         {
-            lock (_lockObj)
+            if (_lockObj != null)
             {
-                Dispose(false);
+                lock (_lockObj)
+                {
+                    Dispose(false);
+                }
             }
         }
     }

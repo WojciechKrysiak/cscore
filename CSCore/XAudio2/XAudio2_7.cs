@@ -511,7 +511,7 @@ namespace CSCore.XAudio2
         {
             Guid guid = debug
                ? new Guid("c4f82dd4-cb4e-4ce1-8bdb-ee32d4198269")
-               : new Guid("a93130e-1d53-41d1-a9cf-e758800bb179");
+               : new Guid("6a93130e-1d53-41d1-a9cf-e758800bb179");
 
             IntPtr ptr = IntPtr.Zero;
             HResult result = Win32.NativeMethods.CoCreateInstance(guid,
