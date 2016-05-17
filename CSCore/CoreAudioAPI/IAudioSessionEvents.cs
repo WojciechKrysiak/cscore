@@ -23,6 +23,7 @@ namespace CSCore.CoreAudioAPI
         /// <param name="newDisplayName">The new display name for the session. </param>
         /// <param name="eventContext">The event context value.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnDisplayNameChanged([In, MarshalAs(UnmanagedType.LPWStr)] string newDisplayName, [In] ref Guid eventContext);
 
         /// <summary>
@@ -31,6 +32,7 @@ namespace CSCore.CoreAudioAPI
         /// <param name="newIconPath">The path for the new display icon for the session.</param>
         /// <param name="eventContext">The event context value.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnIconPathChanged([In, MarshalAs(UnmanagedType.LPWStr)] string newIconPath, [In] ref Guid eventContext);
 
         /// <summary>
@@ -40,6 +42,7 @@ namespace CSCore.CoreAudioAPI
         /// <param name="newMute">The new muting state. If TRUE, muting is enabled. If FALSE, muting is disabled.</param>
         /// <param name="eventContext">The event context value.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnSimpleVolumeChanged([In] float newVolume, [In, MarshalAs(UnmanagedType.Bool)] bool newMute,
             [In] ref Guid eventContext);
 
@@ -51,6 +54,7 @@ namespace CSCore.CoreAudioAPI
         /// <param name="changedChannel">The number of the channel whose volume level changed.</param>
         /// <param name="eventContext">The event context value.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnChannelVolumeChanged([In] int channelCount, [In] float[] newChannelVolumeArray, [In] int changedChannel,
             [In] ref Guid eventContext);
 
@@ -60,6 +64,7 @@ namespace CSCore.CoreAudioAPI
         /// <param name="newGroupingParam">The new grouping parameter for the session. This parameter points to a grouping-parameter GUID.</param>
         /// <param name="eventContext">The event context value.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnGroupingParamChanged([In] ref Guid newGroupingParam, [In] ref Guid eventContext);
 
         /// <summary>
@@ -67,6 +72,7 @@ namespace CSCore.CoreAudioAPI
         /// </summary>
         /// <param name="newState">The new session state.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnStateChanged([In] AudioSessionState newState);
 
         /// <summary>
@@ -74,6 +80,7 @@ namespace CSCore.CoreAudioAPI
         /// </summary>
         /// <param name="disconnectReason">The reason that the audio session was disconnected.</param>
         /// <returns>HRESULT</returns>
+        [PreserveSig]
         int OnSessionDisconnected([In] AudioSessionDisconnectReason disconnectReason);
     }
 }
